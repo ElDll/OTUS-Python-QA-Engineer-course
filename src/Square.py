@@ -5,11 +5,13 @@ class Square(Figure):
 
     def __init__(self, a):
         self.name = "Квадрат"
-        self.area = a ** 2
-        self.perimetr = a * 4
+        self.a = a
 
-    def add_area(self, figure):
-        if isinstance(figure, Figure):
-            return self.area + figure.area
-        else:
-            raise ValueError
+
+    @property
+    def area(self):
+        return self.a ** 2
+
+    @property
+    def perimetr(self):
+        return self.a * 4

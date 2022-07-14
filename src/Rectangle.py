@@ -5,11 +5,13 @@ class Rectangle(Figure):
 
     def __init__(self, a, b):
         self.name = "Прямоугольник"
-        self.area = a * b
-        self.perimetr = 2 * (a + b)
+        self.a = a
+        self.b = b
 
-    def add_area(self, figure):
-        if isinstance(figure, Figure):
-            return self.area + figure.area
-        else:
-            raise ValueError
+    @property
+    def area(self):
+        return self.a * self.b
+
+    @property
+    def perimetr(self):
+        return 2 * (self.a + self.b)

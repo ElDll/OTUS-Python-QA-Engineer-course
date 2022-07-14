@@ -1,16 +1,17 @@
-import math
 from .Figure import Figure
+import math
 
 
-class Circle:
+class Circle(Figure):
 
     def __init__(self, r):
         self.name = "Круг"
-        self.area = math.pi * r ** 2
-        self.perimetr = 2 * r * math.pi
+        self.r = r
 
-    def add_area(self, figure):
-        if isinstance(figure, Figure):
-            return self.area + figure.area
-        else:
-            raise ValueError
+    @property
+    def area(self):
+        return math.pi * self.r ** 2
+
+    @property
+    def perimetr(self):
+        return 2 * self.r * math.pi
