@@ -5,11 +5,11 @@ from selenium import webdriver
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="Chrome")
-    parser.addoption("--url", action="store", default='http://192.168.1.76:8081/')
+    parser.addoption("--url", action="store", default='http://192.168.1.76:8081')
 
 
 @pytest.fixture(scope='module')
-def driver(request) -> WebDriver:
+def driver(request):
     browser = request.config.getoption("--browser")
     if browser == 'Chrome':
         _driver = webdriver.Chrome()
