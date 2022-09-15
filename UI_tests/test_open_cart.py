@@ -1,7 +1,14 @@
-from .Pages.locators import MainPageLocators, CatalogPageLocators, ProductPageLocators, AdminPageLocators, RegisterPageLocators
-from .Pages.common_methods import CommonMethods
-
 import pytest
+
+from .Pages.locators import MainPageLocators
+from .Pages.locators import CatalogPageLocators
+from .Pages.locators import ProductPageLocators
+from .Pages.locators import AdminAuthPageLocators
+from .Pages.locators import RegisterPageLocators
+from .Pages.admin_page import AdminPage
+from .Pages.main_page import MainPage
+from .Pages.register_page import RegisterPage
+from .Pages.common_methods import CommonMethods
 
 
 @pytest.mark.main_page
@@ -39,21 +46,21 @@ def test_catalog_page(driver, locator):
                           ProductPageLocators.LIKE_PRODUCT_BTN]
                          )
 def test_catalog_page(driver, locator):
-    catalog_page = CommonMethods(driver)
-    assert catalog_page.check_element(*locator), f'Element not found {locator[1]}'
+    product_page = CommonMethods(driver)
+    assert product_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
 @pytest.mark.admin_page
 @pytest.mark.parametrize('locator',
-                         [AdminPageLocators.ADMIN_TITLE,
-                          AdminPageLocators.USER_FIELD,
-                          AdminPageLocators.PASSWORD_FIELD,
-                          AdminPageLocators.FORGOTTEN_BTN,
-                          AdminPageLocators.LOGIN_BTN]
+                         [AdminAuthPageLocators.ADMIN_TITLE,
+                          AdminAuthPageLocators.USER_FIELD,
+                          AdminAuthPageLocators.PASSWORD_FIELD,
+                          AdminAuthPageLocators.FORGOTTEN_BTN,
+                          AdminAuthPageLocators.LOGIN_BTN]
                          )
 def test_catalog_page(driver, locator):
-    catalog_page = CommonMethods(driver)
-    assert catalog_page.check_element(*locator), f'Element not found {locator[1]}'
+    admin_page = CommonMethods(driver)
+    assert admin_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
 @pytest.mark.register_page
@@ -65,8 +72,48 @@ def test_catalog_page(driver, locator):
                           RegisterPageLocators.CONTINUE_BTN]
                          )
 def test_catalog_page(driver, locator):
-    catalog_page = CommonMethods(driver)
-    assert catalog_page.check_element(*locator), f'Element not found {locator[1]}'
+    register_page = CommonMethods(driver)
+    assert register_page.check_element(*locator), f'Element not found {locator[1]}'
+
+
+@pytest.mark.add_product
+def test_add_product(driver):
+    admin_page = AdminPage(driver)
+    admin_page.login()
+    admin_page.go_to_products_page()
+    admin_page.add_product()
+    assert admin_page.check_product_in_table(), 'Товар не добавлен/Не отображается в таблице'
+
+
+@pytest.mark.delete_product
+def test_delete_product(driver):
+    admin_page = AdminPage(driver)
+    admin_page.login()
+    admin_page.go_to_products_page()
+    admin_page.delete_product()
+    assert not admin_page.check_product_in_table(), 'Товар не удален из таблицы'
+
+
+def test_register_user(driver):
+    main_page = MainPage(driver)
+    main_page.go_to_register_page()
+    register_page = RegisterPage(driver)
+    register_page.register_user()
+    assert register_page.check_created_header(), 'Аккаунт не создан'
+
+
+@pytest.mark.parametrize('currency',
+                         ['dollar',
+                          'euro',
+                          'pound']
+                         )
+def test_change_currency(driver, currency):
+    main_page = MainPage(driver)
+    main_page.change_currency(currency)
+    assert main_page.check_currency_on_main_page(currency), 'Изменение валюты прошло неудачно'
+
+
+
 
 
 
