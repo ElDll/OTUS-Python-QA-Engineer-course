@@ -1,4 +1,5 @@
 import pytest
+import allure
 
 from .Pages.locators import MainPageLocators
 from .Pages.locators import CatalogPageLocators
@@ -11,6 +12,7 @@ from .Pages.register_page import RegisterPage
 from .Pages.common_methods import CommonMethods
 
 
+@allure.title('Поиск элементов на main page')
 @pytest.mark.main_page
 @pytest.mark.parametrize('locator',
                          [MainPageLocators.SEARCH_FIELD,
@@ -21,9 +23,10 @@ from .Pages.common_methods import CommonMethods
                          )
 def test_main_page(driver, locator):
     main_page = CommonMethods(driver)
-    assert main_page.check_element(*locator), f'Element not found {locator[1]}'
+    assert main_page.check_element(*MainPageLocators.SEARCH_FIELD), f'Element not found {locator[1]}'
 
 
+@allure.title('Поиск элементов на catalog page')
 @pytest.mark.catalog_page
 @pytest.mark.parametrize('locator',
                          [CatalogPageLocators.LEFT_NAVBAR,
@@ -37,6 +40,7 @@ def test_catalog_page(driver, locator):
     assert catalog_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
+@allure.title('Поиск элементов на product page')
 @pytest.mark.product_page
 @pytest.mark.parametrize('locator',
                          [ProductPageLocators.PRODUCT_PHOTO,
@@ -50,6 +54,7 @@ def test_catalog_page(driver, locator):
     assert product_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
+@allure.title('Поиск элементов на admin page')
 @pytest.mark.admin_page
 @pytest.mark.parametrize('locator',
                          [AdminAuthPageLocators.ADMIN_TITLE,
@@ -63,6 +68,7 @@ def test_catalog_page(driver, locator):
     assert admin_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
+@allure.title('Поиск элементов на register page')
 @pytest.mark.register_page
 @pytest.mark.parametrize('locator',
                          [RegisterPageLocators.FIRST_NAME_FIELD,
@@ -76,6 +82,7 @@ def test_catalog_page(driver, locator):
     assert register_page.check_element(*locator), f'Element not found {locator[1]}'
 
 
+@allure.title('Добавление продуктов в админ панели')
 @pytest.mark.add_product
 def test_add_product(driver):
     admin_page = AdminPage(driver)
@@ -85,6 +92,7 @@ def test_add_product(driver):
     assert admin_page.check_product_in_table(), 'Товар не добавлен/Не отображается в таблице'
 
 
+@allure.title('Удаление продуктов в админ панели')
 @pytest.mark.delete_product
 def test_delete_product(driver):
     admin_page = AdminPage(driver)
@@ -94,6 +102,7 @@ def test_delete_product(driver):
     assert not admin_page.check_product_in_table(), 'Товар не удален из таблицы'
 
 
+@allure.title('Регистрация нового акканута')
 def test_register_user(driver):
     main_page = MainPage(driver)
     main_page.go_to_register_page()
@@ -102,6 +111,7 @@ def test_register_user(driver):
     assert register_page.check_created_header(), 'Аккаунт не создан'
 
 
+@allure.title('Смена валюты в магазине')
 @pytest.mark.parametrize('currency',
                          ['dollar',
                           'euro',

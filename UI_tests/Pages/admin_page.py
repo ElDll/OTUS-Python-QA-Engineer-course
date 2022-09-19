@@ -1,4 +1,6 @@
 import itertools
+import sys
+import allure
 
 from selenium.common import TimeoutException
 from .common_methods import CommonMethods
@@ -13,23 +15,48 @@ class AdminPage(CommonMethods):
     def __init__(self, driver):
         super().__init__(driver)
 
+    @allure.step("Авторизация в админ аккаунте")
     def login(self):
-        self.input_value(*AdminAuthPageLocators.USER_FIELD, login)
-        self.input_value(*AdminAuthPageLocators.PASSWORD_FIELD, password)
-        self.click_element(*AdminAuthPageLocators.LOGIN_BTN)
+        try:
+            self.input_value(*AdminAuthPageLocators.USER_FIELD, login)
+            self.input_value(*AdminAuthPageLocators.PASSWORD_FIELD, password)
+            self.click_element(*AdminAuthPageLocators.LOGIN_BTN)
+        except TimeoutException:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
+            raise sys.exit('Метод go_to_register_page завершился ошибкой')
 
+    @allure.step("Переход на страницу с товарами")
     def go_to_products_page(self):
-        self.click_element(*AdminMainPageLocators.CATALOG_BTN)
-        self.click_element(*AdminMainPageLocators.PRODUCTS_BTN)
+        try:
+            self.click_element(*AdminMainPageLocators.CATALOG_BTN)
+            self.click_element(*AdminMainPageLocators.PRODUCTS_BTN)
+        except TimeoutException:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
+            raise sys.exit('Метод go_to_register_page завершился ошибкой')
 
+    @allure.step("Добавление нового товара")
     def add_product(self):
-        self.click_element(*AdminProductPageLocators.ADD_PRODUCT_BTN)
-        self.input_value(*AddFormLocators.PRODUCT_NAME_FIELD, product_name)
-        self.input_value(*AddFormLocators.META_TAG_FIELD, meta_tag_title)
-        self.click_element(*AddFormLocators.DATA_BTN)
-        self.input_value(*AddFormLocators.MODEL_FIELD, model)
-        self.click_element(*AddFormLocators.SAVE_PRODUCT_BTN)
+        try:
+            self.click_element(*AdminProductPageLocators.ADD_PRODUCT_BTN)
+            self.input_value(*AddFormLocators.PRODUCT_NAME_FIELD, product_name)
+            self.input_value(*AddFormLocators.META_TAG_FIELD, meta_tag_title)
+            self.click_element(*AddFormLocators.DATA_BTN)
+            self.input_value(*AddFormLocators.MODEL_FIELD, model)
+            self.click_element(*AddFormLocators.SAVE_PRODUCT_BTN)
+        except TimeoutException:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
+            raise sys.exit('Метод go_to_register_page завершился ошибкой')
 
+    @allure.step("Удаление товара")
     def delete_product(self):
         """
         Метод ищет товар перебирая ячейки таблицы и сравнивая product_name
@@ -50,17 +77,22 @@ class AdminPage(CommonMethods):
                             AdminProductPageLocators.PAGINATION_BAR[1].format(page_number + 2))
                         break
                     except TimeoutException:
+                        allure.attach(
+                            body=self.driver.get_screenshot_as_png(),
+                            name="screenshot_image",
+                            attachment_type=allure.attachment_type.PNG)
                         raise AssertionError("Товар не найден")
                 elif cell[2].text == product_name:
                     self.click_element(
                         AdminProductPageLocators.CELL_CHECKBOX[0], AdminProductPageLocators.CELL_CHECKBOX[1].format(cell_number+1))
-                    self.click_element(*AdminProductPageLocators.DELETE_BTN).click()
+                    self.click_element(*AdminProductPageLocators.DELETE_BTN)
                     confirm_alert = self.driver.switch_to.alert
                     confirm_alert.accept()
                     return
                 else:
                     continue
 
+    @allure.step("Проверка нахождения товара в таблице")
     def check_product_in_table(self):
         """
         Метод ищет товар по полю Product name в таблице на странице админа
@@ -92,4 +124,8 @@ class AdminPage(CommonMethods):
                         AdminProductPageLocators.PAGINATION_BAR[0], AdminProductPageLocators.PAGINATION_BAR[1].format(page_number+2))
                     continue
                 except TimeoutException:
+                    allure.attach(
+                        body=self.driver.get_screenshot_as_png(),
+                        name="screenshot_image",
+                        attachment_type=allure.attachment_type.PNG)
                     return False
