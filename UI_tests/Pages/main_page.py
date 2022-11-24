@@ -1,3 +1,6 @@
+import sys
+import allure
+
 from selenium.common import TimeoutException
 from UI_tests.Pages.common_methods import CommonMethods
 from UI_tests.Pages.locators import MainPageLocators
@@ -9,10 +12,19 @@ class MainPage(CommonMethods):
     def __init__(self, driver):
         super().__init__(driver)
 
+    @allure.step("Переход на страницу регистрации")
     def go_to_register_page(self):
-        self.click_element(*MainPageLocators.PROFILE_BUTTON)
-        self.click_element(*MainPageLocators.REGISTER_BTN)
+        try:
+            self.click_element(*MainPageLocators.PROFILE_BUTTON)
+            self.click_element(*MainPageLocators.REGISTER_BTN)
+        except TimeoutException:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
+            raise sys.exit('Метод go_to_register_page завершился ошибкой')
 
+    @allure.step("Смена отображаемой валюты")
     def change_currency(self, currency):
         self.click_element(*MainPageLocators.SELECT_CURRENCY_BTN)
         if currency == 'dollar':
@@ -22,8 +34,13 @@ class MainPage(CommonMethods):
         elif currency == 'pound':
             self.click_element(*MainPageLocators.SELECT_POUND)
         else:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
             raise AssertionError('Передана неверная валюта')
 
+    @allure.step("Проверка отображаемой валюты на главной странице")
     def check_currency_on_main_page(self, currency):
         basket_price = self.find_element(*MainPageLocators.BASKET_BUTTON_TEXT)
         if currency == 'dollar':
@@ -32,6 +49,10 @@ class MainPage(CommonMethods):
                 if basket_price.text[-5] == '$':
                     return True
             except TimeoutException:
+                allure.attach(
+                    body=self.driver.get_screenshot_as_png(),
+                    name="screenshot_image",
+                    attachment_type=allure.attachment_type.PNG)
                 return False
         elif currency == 'euro':
             try:
@@ -39,6 +60,10 @@ class MainPage(CommonMethods):
                 if basket_price.text[-1] == '€':
                     return True
             except TimeoutException:
+                allure.attach(
+                    body=self.driver.get_screenshot_as_png(),
+                    name="screenshot_image",
+                    attachment_type=allure.attachment_type.PNG)
                 return False
         elif currency == 'pound':
             try:
@@ -46,7 +71,15 @@ class MainPage(CommonMethods):
                 if basket_price.text[-5] == '£':
                     return True
             except TimeoutException:
+                allure.attach(
+                    body=self.driver.get_screenshot_as_png(),
+                    name="screenshot_image",
+                    attachment_type=allure.attachment_type.PNG)
                 return False
         else:
+            allure.attach(
+                body=self.driver.get_screenshot_as_png(),
+                name="screenshot_image",
+                attachment_type=allure.attachment_type.PNG)
             raise AssertionError('Передана неверная валюта/Что-то пошло не так')
 
