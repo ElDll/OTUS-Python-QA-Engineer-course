@@ -50,10 +50,10 @@ def report_generator():
     init_users(lines)
 
     for line in lines:
-        ALL_PROCESSES += 1
         result = list(line.split())
-        if result[0] == "USER":
+        if result[0] == "USER" or result[0] == "\n":
             continue
+        ALL_PROCESSES += 1
         for key in USERS_PROCESSES.keys():
             if key == result[0]:
                 USERS_PROCESSES[key] += 1
@@ -62,20 +62,20 @@ def report_generator():
         CPU_COUNT += float(result[2])
 
         if float(result[3]) > MEMORY_MAX[1]:
-            MEMORY_MAX[0] = result[10]
+            MEMORY_MAX[0] = result[10][:20]
             MEMORY_MAX[1] = float(result[3])
 
         if float(result[2]) > CPU_MAX[1]:
-            CPU_MAX[0] = result[10]
+            CPU_MAX[0] = result[10][:20]
             CPU_MAX[1] = float(result[2])
 
     report = "Отчёт о состоянии системы:\n" \
              f"Пользователи системы: " + read_collection(USERS) + "\n" \
              f"Процессов запущено: {ALL_PROCESSES}\n" \
-             "Пользовательских процессов:" + \
+             "Пользовательских процессов:\n" + \
              read_collection(USERS_PROCESSES) + \
-             f"Всего памяти используется: {MEMORY_COUNT}\n" \
-             f"Всего CPU используется: {CPU_COUNT}\n" \
+             f"Всего памяти используется: {'%.1f' % MEMORY_COUNT}\n" \
+             f"Всего CPU используется: {'%.1f' % CPU_COUNT}\n" \
              f"Больше всего памяти использует: {MEMORY_MAX[0]}\n" \
              f"Больше всего CPU использует: {CPU_MAX[0]}"
 
