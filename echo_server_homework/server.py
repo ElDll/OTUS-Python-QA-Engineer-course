@@ -16,18 +16,22 @@ def data_parce(data: list):
         if data[i] in METHODS:
             result += f"Request Method: {data[i]}\r\n"
         if data[i] == "Host:":
-            result += f"Request Source: ({data[i + 1]}, "
+            result += f"Request Source: (\'{data[i + 1]}\', "
         if data[i] == "Port:":
             result += f"{data[i + 1]})\r\n"
         if data[i] == "Path:":
-            try:
-                status_code = re.search(regex, data[i + 1]).group(2)
-                if int(status_code) in list(HTTPStatus):
-                    result += f"Response Status: {status_code}\r\n"
+            matches = re.search(regex, data[i + 1])
+            if matches is not None:
+                status_code = matches.group(2)
+                if status_code in str(list(HTTPStatus)) and status_code != '':
+                    for element in list(HTTPStatus):
+                        if element.value == int(status_code):
+                            phrase = element.phrase
+                            result += f"Response Status: {status_code} {phrase}\r\n"
                 else:
-                    result += f"Response Status: 200\r\n"
-            except:
-                result += f"Response Status: 200\r\n"
+                    result += f"Response Status: 200 OK\r\n"
+            else:
+                result += f"Response Status: 200 OK\r\n"
 
     for i in range(len(data)):
         if data[i][-1] == ":":
