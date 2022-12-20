@@ -19,7 +19,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         "Host: localhost\r\n"
         "Port: 4324\r\n"
         "User-Agent: curl/7.83.1\r\n"
-        "Path: https://disqus.com/recommendations/?status=100&f=metanitcom&t_u=https%3A%2F%2Fmetanit.com\r\n"
+        "Path: https://disqus.com/recommendations/?status=301&f=metanitcom&t_u=https%3A%2F%2Fmetanit.com\r\n"
         "Number: 123\r\n"
         "\r\nAccept: */*\r\n\r\n"
     )

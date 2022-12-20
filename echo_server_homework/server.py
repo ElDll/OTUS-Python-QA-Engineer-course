@@ -20,10 +20,13 @@ def data_parce(data: list):
         if data[i] == "Port:":
             result += f"{data[i + 1]})\r\n"
         if data[i] == "Path:":
-            status_code = re.search(regex, data[i + 1]).group(2)
-            if int(status_code) in list(HTTPStatus):
-                result += f"Response Status: {status_code}\r\n"
-            else:
+            try:
+                status_code = re.search(regex, data[i + 1]).group(2)
+                if int(status_code) in list(HTTPStatus):
+                    result += f"Response Status: {status_code}\r\n"
+                else:
+                    result += f"Response Status: 200\r\n"
+            except:
                 result += f"Response Status: 200\r\n"
 
     for i in range(len(data)):
