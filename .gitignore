@@ -132,3 +132,4 @@ dmypy.json
 .idea
 .allure-results
 .allure-report
+!/docker_homework/.pytest_cache/
